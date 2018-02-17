@@ -1,0 +1,30 @@
+---
+
+- hosts: server1
+  remote_user: docker
+
+  # here we make a variable named "env" that is a dictionary
+  vars:
+    env:
+       HI: test2
+       http_proxy: http://proxy.example.com:8080
+
+  tasks:
+
+    # here we just define the dictionary directly and use it
+    # (here $HI is the shell variable as nothing in Ansible will replace it)
+
+    - shell: echo $HI, $http_proxy
+      environment:
+         HI: test1
+      register: out
+    
+    - debug: var=out.stdout_lines
+
+    # here we are using the $env variable above
+
+    - shell: echo $HI, $http_proxy
+      environment: "{{env}}"
+      register: out
+
+    - debug: var=out.stdout_lines

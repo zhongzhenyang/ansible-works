@@ -1,0 +1,17 @@
+{
+    "terminal.integrated.fontSize": 12,
+    "terminal.integrated.fontFamily": "Ubuntu Mono",
+    "files.associations": {
+        "**/defaults/**/*": "ansible",
+        "**/tasks/**/*.yml" : "ansible",
+        "**/handler/*.yml" : "ansible",
+        "**/*_vars/**/*.yml" : "ansible",
+        "**/roles/**/*.yml" : "ansible",
+        "**/playbooks/**/*.yml" : "ansible",
+        "**/pb/**/*.yml" : "ansible",
+        "**/*ansible*/**/*.yml" : "ansible",
+        "**/vars/**/*.yml": "ansible",
+        "hosts.ini": "ansible"
+
+    }
+}

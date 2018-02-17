@@ -1,0 +1,40 @@
+---
+# this is play example
+
+# on node1,run as root
+
+- name: example play
+  hosts: server1
+  remote_user: docker
+  become: yes
+  become_method: sudo
+
+  vars:
+    http_port: 80
+    max_clients: 200
+
+  tasks:
+  - name: longrunner
+    command: /bin/sleep 15
+    async: 45
+    poll: 5
+    
+  - name: write some_random_foo configuration
+    template:
+      src: templates/foo.j2
+      dest: /etc/some_random_foo.conf
+    notify:
+    - restart redis server
+
+  - name: install redis server
+    apt: 
+      pkg: redis-server
+      state: latest
+  
+  - name: start redis server
+    service: name=redis-server state=started
+  
+  handlers:
+    - name: restart redis server
+      service: name=redis-server state=restarted
+

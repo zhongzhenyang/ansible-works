@@ -1,0 +1,29 @@
+- name: example play one
+  hosts: all
+  remote_user: docker
+  become: yes
+  become_method: sudo
+
+  tags:
+  - extra
+
+  tasks:
+  - name: hi
+    tags: ['foo']
+    shell: echo "first task ran"
+
+- name: example play two
+  hosts: all
+  remote_user: docker
+  become: yes
+  become_method: sudo
+
+  tasks:
+  - name: hi
+    tags: 
+    - bar
+    shell: echo "second task ran"
+
+  - include: tasks/test.yml
+    tags:
+    - test
