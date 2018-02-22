@@ -1,0 +1,26 @@
+---
+
+  - hosts: all
+    
+    pre_tasks:
+
+        # these tasks are executed prior to roles.
+        # this might be a good time to signal an outage window or take a host out of a load balanced pool
+
+      - local_action: shell echo "hi this is a pre_task step about {{ inventory_hostname }}" 
+
+    roles:
+      - {role: foo, param1: 1000, param2: 2000, tags: ['foo','bar']}
+      - {role: foo, param1: 8000, param2: 9000, tags: ['baz']}
+
+
+    tasks:
+      # you can still have loose tasks/handlers and they will execute after roles are applied
+
+      - shell: echo 'this is a loose task'  
+        register: out
+    
+      - debug: var=out.stdout_lines
+    
+    post_tasks:
+      - local_action: shell echo 'this is a post_task about {{ inventory_hostname }}' >> /home/zzy/role_test.txt

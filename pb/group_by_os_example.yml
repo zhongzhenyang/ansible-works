@@ -1,0 +1,17 @@
+---
+
+- hosts: all
+  tasks:
+    - group_by: key=os_{{ ansible_distribution }}
+  
+
+- hosts: os_Ubuntu
+  gather_facts: False
+  tasks:
+    - shell: echo ubuntu
+
+
+- hosts: os_Centos
+  gather_facts: False
+  tasks:
+    - shell: echo centos
