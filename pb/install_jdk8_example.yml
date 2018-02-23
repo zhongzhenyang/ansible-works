@@ -1,0 +1,13 @@
+---
+- name: install JDK 8
+  hosts: all
+  remote_user: cubedrive
+  become: yes
+  become_method: sudo
+
+  roles:
+    - role: tersmitten.oracle-java
+      oracle_java_versions:
+        - version: 8
+          set_as_default: true
+         

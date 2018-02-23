@@ -1,0 +1,12 @@
+---
+- name: Install Docker
+  hosts: all
+  remote_user: cubedrive
+  become: yes
+  become_method: sudo
+
+  roles:
+    - role: tersmitten.oracle-java
+      daemon_json: 
+        registry-mirrors:
+        - 'http://0d358aff.m.daocloud.io'

@@ -1,0 +1,26 @@
+---
+- name: deploy mongodb by docker
+  hosts: all
+  remote_user: cubedrive
+  become: yes
+  become_method: sudo
+
+# docker run -d --name  mongod-test -v /cubedrive/docker-data/test-app/mongo:/data/db  -p 20000:27017 -e MONGO_INITDB_ROOT_USERNAME="root"  -e MONGO_INITDB_ROOT_PASSWORD="mongo-root-pwd"  --restart=always mongo:3.4.4 --auth
+
+  tasks:
+    - name: create a mongodb container
+      docker_container:
+        name: my-mongodb
+        image: mongo:3.4.4
+        state: started
+        detach: True
+        restart_policy: always
+        volumes:
+          - "/data/my-mongodb:/data/db"
+        ports:
+          - "12345:27017"
+        env:
+          MONGO_INITDB_ROOT_USERNAME: "root"
+          MONGO_INITDB_ROOT_PASSWORD: "mongo-root-pwd"
+        command: mongod --auth
+
