@@ -1,0 +1,19 @@
+---
+- name: Use Pip install eggs
+  hosts: all
+  remote_user: cubedrive
+  become: yes
+  become_method: sudo
+
+  tasks:
+    - name: pip install mysqldb 
+      pip:
+        name: "MySQL-python"
+      ignore_errors: yes
+    
+    - name: pip install pymongo
+      pip:
+        name: pymongo
+    
+    - pip:
+        name: "python-jenkins"

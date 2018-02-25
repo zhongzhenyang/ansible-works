@@ -13,5 +13,8 @@
         "**/vars/**/*.yml": "ansible",
         "hosts.ini": "ansible"
 
-    }
+    },
+    "python.linting.enabled": false,
+    "editor.tabSize": 2,
+    "editor.renderWhitespace": "boundary"
 }
