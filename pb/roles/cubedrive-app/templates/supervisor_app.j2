@@ -1,0 +1,9 @@
+[program:{{ app_name }}]
+command=/usr/lib/jvm/java-8-oracle/bin/java -Xms768m -Xmx768m -jar "{{ app_dir }}/cubedrive-webapp.jar" --spring.profiles.active=custom,loginSync,formSync
+user=cubedrive
+autorestart=false                                      ; 自动重启
+priority=100
+startsecs=1
+stdout_logfile={{ app_dir }}/console.log
+stdout_logfile_maxbytes=10MB
+redirect_stderr=true

@@ -1,0 +1,10 @@
+---
+app_name: "{{ your_app_name }}"
+app_dir:  "{{ your_app_dir }}"
+context_path: "{{ your_app_context_path }}"
+server_host: "{{ your_app_server_host }}"
+server_port: "{{ your_app_server_port }}"
+nginx_host: "{{ your_nginx_server_host }}"
+nginx_conf_upstream_dir: "{{ your_nginx_conf_upstream_dir | default('/home/cubedrive/nginx/conf/upstreams.d') }}"
+supervisor_conf_dir: "{{ your_supervisor_conf_dir | default('/etc/supervisor/conf.d/') }}"
+

@@ -1,0 +1,9 @@
+{
+  "your_app_name": "foo",
+  "your_app_dir": "/home/cubedrive/apps/foo",
+  "your_app_context_path": "foo",
+  "your_app_server_host": "192.168.0.103",
+  "your_app_server_port": "12345",
+  "your_nginx_server_host": "192.168.0.103",
+  "your_nginx_conf_upstream_dir": "/home/cubedrive/nginx/conf/upstreams.d"
+}

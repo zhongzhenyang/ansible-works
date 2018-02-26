@@ -1,0 +1,11 @@
+---
+  
+- name: "deploy cubedrive app"
+  hosts: all
+  remote_user: cubedrive
+  become: yes
+  become_method: sudo
+  gather_facts: no
+
+  roles:
+  - role: "cubedrive-app"

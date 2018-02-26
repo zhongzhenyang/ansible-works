@@ -1,0 +1,20 @@
+---
+- name: Use apt install packages
+  hosts: all
+  remote_user: cubedrive
+  become: yes
+  become_method: sudo
+
+  tasks:
+  - name: Install list of packages
+    apt: name={{item}} state=latest update_cache=yes
+    with_items:
+    - "supervisor"
+    - "zlib1g-dev"
+    - "zlib1g"
+    - "fontconfig"
+    - "libfreetype6"
+    - "libfreetype6-dev"
+    - "libxrender-dev"
+    
+
