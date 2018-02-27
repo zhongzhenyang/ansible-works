@@ -1,0 +1,11 @@
+---
+
+jenkins_url: "http://localhost:40000/jenkins"
+jenkins_user: "admin"
+jenkins_password: "admin"
+mysql_database: "test"
+mysql_user: "test"
+mysql_user_password: "test-mysql#pwd"
+mongo_database: "test"
+mongo_user: "test"
+mongo_user_password: "test-secret#pwd"

@@ -2,8 +2,14 @@
   "your_app_name": "foo",
   "your_app_dir": "/home/cubedrive/apps/foo",
   "your_app_context_path": "foo",
-  "your_app_server_host": "192.168.0.103",
+  "your_app_server_host": "server1",
   "your_app_server_port": "12345",
-  "your_nginx_server_host": "192.168.0.103",
-  "your_nginx_conf_upstream_dir": "/home/cubedrive/nginx/conf/upstreams.d"
+  "your_nginx_server_group": "webservers",
+  "your_nginx_conf_upstream_dir": "/home/cubedrive/nginx/conf/upstreams.d",
+  "your_docker_data_dir": "/data/docker-data",
+  "your_mysqld_port": 30000,
+  "your_mysql_root_password": "cubedrive_mysql_root",
+  "your_mongod_port": 20000,
+  "your_mongo_root_username": "root",
+  "your_mongo_root_password": "mongo-root-pwd"
 }

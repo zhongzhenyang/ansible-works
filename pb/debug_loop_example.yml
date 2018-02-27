@@ -1,0 +1,99 @@
+---
+
+- name: debug loop
+  hosts: all
+  remote_user: cubedrive
+  gather_facts: no
+
+  tasks: 
+  - debug:
+    msg: "{{ item }}"
+    vars:
+      nested_list:
+        - - one
+          - two
+          - three
+    with_items: "{{ nested_list }}"
+
+# This will run debug once with the three items
+  - debug:
+    msg: "{{ item }}"
+    vars:
+      nested_list:
+        - - one
+          - two
+          - three
+    with_items:
+      - "{{ nested_list }}"
+
+  - name: nested loops
+    debug:
+      msg:
+      - name: "{{ item[0] }}"
+      - priv: "{{ item[1] }}.*:ALL"
+      - append_privs: yes
+      - password: "foo"
+    with_nested:
+    - [ 'alice', 'bob' ]
+    - [ 'clientdb', 'employeedb', 'providerdb' ]
+  
+  - name: looping over hashed
+    vars:
+      users:
+        alice:
+          name: Alice Appleworth
+          telephone: 123-456-7890
+        bob:
+          name: Bob Bananarama
+          telephone: 987-654-3210
+    debug:
+      msg: "User {{ item.key }} is {{ item.value.name }} ({{ item.value.telephone }})"
+    with_dict: "{{ users }}"
+
+  - name: flattened loop demo
+    vars:
+      packages_base:
+        - [ 'foo-package', 'bar-package' ]
+      packages_apps:
+      - [ ['one-package', 'two-package' ]]
+      - [ ['red-package'], ['blue-package']]
+    debug:
+      msg: "{{ item }}"
+    with_flattened:
+     - "{{ packages_base }}"
+     - "{{ packages_apps }}"
+
+  - shell: "echo {{ item }}"
+    with_items:
+      - "one"
+      - "two"
+    register: echo
+  
+  # - debug:
+  #     var: echo.results
+
+  - name: Fail if return code is not 0
+    fail:
+      msg: "The command ({{ item.cmd }}) did not have a 0 return code"
+    when: item.rc != 0
+    with_items: "{{ echo.results }}"
+  
+  - name: create servers, pause 3s before creating next
+    debug:
+      msg:
+      - name: "{{ item }}"
+      - state: present
+    with_items:
+      - server1
+      - server2
+    loop_control:
+      pause: 3
+  
+  - include_tasks: inner_task.yml
+    with_items:
+    - 1
+    - 2
+    - 3
+    loop_control:
+      loop_var: outer_item
+  

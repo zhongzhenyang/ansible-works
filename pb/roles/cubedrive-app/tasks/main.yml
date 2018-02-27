@@ -10,9 +10,98 @@
 
 - name: template your nginx conf
   template: src=nginx_upstream.j2 dest="{{ nginx_conf_upstream_dir }}"
-  delegate_to: "{{ nginx_host }}"
-
+  delegate_to: "{{  hostvars[item].ansible_ssh_host }}"
+  with_items: "{{ groups[nginx_server_group] }}"
+    
 
 - name: create a jenkins job
-  local_action: jenkins_job config="{{ lookup('template', 'jenkins_project.xml.j2') }}" name={{ app_name }} user="jenkinsAdmin" password="jenkins@Qaz222" url="http://112.74.42.37:4080/jenkins"
+  local_action: jenkins_job config="{{ lookup('template', 'jenkins_project.xml.j2') }}" name={{ app_name }} user="{{ jenkins_user }}" password="{{ jenkins_password }}" url="{{ jenkins_url }}"
   become: False
+
+- name: create mysqldb instance
+  docker_container:
+    name: mysqld-{{ app_name }}
+    image: "mysql:5.7"
+    state: started
+    detach: True
+    restart_policy: always
+    volumes:
+      - "{{ docker_data_dir }}/{{ app_name }}/mysql :/data/db"
+    ports:
+      - "{{ mysqld_port }}:3306"
+    env:
+      MYSQL_ROOT_PASSWORD: "{{ mysql_root_password }}"
+  tags: ["docker", "mysql"]
+ 
+- name: wait until mysqldb running
+  wait_for:
+    port: "{{ mysqld_port }}"
+    delay: 3
+    timeout: 600
+  tags: ["docker", "mysql"]
+
+- name: create msyqldb user
+  mysql_user:
+    name: "{{ mysql_user }}"
+    password: "{{ mysql_user_password }}"
+    priv: '*.*:ALL'
+    state: present
+    host: '%'
+    login_user: "root"
+    login_password: "{{ mysql_root_password }}"
+    login_host: "{{ server_host }} "
+    login_port: "{{ mysqld_port }}"
+  tags: ["mysql"]
+
+- name: Create mysqldb database
+  mysql_db:
+    name: "{{ mysql_database }}"
+    state: present
+    encoding: "utf8"
+    login_user: "{{ mysql_user }}"
+    login_password: "{{ mysql_user_password }}"
+    login_host: "{{ server_host }}"
+    login_port: "{{ mysqld_port }}"
+  tags: ["mysql"]
+  
+
+- name: create mongodb instance
+  docker_container:
+    name: mongod-{{ app_name }}
+    image: mongo:3.4.4
+    state: started
+    detach: True
+    restart_policy: always
+    volumes:
+      - "{{ docker_data_dir }}/{{ app_name }}/mongo:/data/db"
+    ports:
+      - "{{ mongod_port }}:27017"
+    env:
+      MONGO_INITDB_ROOT_USERNAME: "{{ mongo_root_username }}"
+      MONGO_INITDB_ROOT_PASSWORD: "{{ mongo_root_password }}"
+    command: "mongod --auth"
+  tags: ["docker", "mongodb"]
+
+- name: wait until mongodb running
+  wait_for:
+    port: "{{ mongod_port }}"
+    delay: 3
+    timeout: 600
+  tags: ["docker", "mongodb"]
+
+
+
+- name: create mongodb user
+  mongodb_user:
+    database: "{{ mongo_database }}"
+    name: "{{ mongo_user }}"
+    password: "{{ mongo_user_password }}"
+    roles: 
+      - db: "{{ mongo_database }}"
+        role: "dbOwner"
+    state: present
+    login_user: "{{ mongo_root_username }}"
+    login_password: "{{ mongo_root_password }}"
+    login_host: "{{ server_host }}"
+    login_port: "{{ mongod_port }}"
+  tags: ["mongodb"]

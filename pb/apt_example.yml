@@ -16,5 +16,7 @@
     - "libfreetype6"
     - "libfreetype6-dev"
     - "libxrender-dev"
+    - "libmysqlclient-dev"
+    - "python-dev"
     
 

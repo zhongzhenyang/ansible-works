@@ -1,6 +1,6 @@
 - name: debug bla bla
   hosts: all
-  remote_user: docker
+  remote_user: cubedrive
   tasks: 
 # Example that prints the loopback address and gateway for each host
   - debug:
