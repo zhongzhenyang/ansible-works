@@ -12,3 +12,9 @@ mongo_user_password: "test-secret#pwd"
 nginx_build_job: "build-nginx"
 font_download_dir: "/home/zzy/Downloads/fonts"
 wkhtmltox_download_dir: "/home/zzy/Downloads"
+app_parent_dir: '{{ ansible_env.HOME + "/app-servers" }}'
+casapp_dirs:
+  - '{{ ansible_env.HOME + "/app-servers" }}'
+  - '{{ ansible_env.HOME + "/casapp-data" }}'
+  - '{{ ansible_env.HOME + "/casapp-logs" }}'
+  - '{{ ansible_env.HOME + "/docker-data" }}'

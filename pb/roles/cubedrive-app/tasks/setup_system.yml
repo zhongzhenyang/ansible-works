@@ -68,3 +68,7 @@
 
 - name: copy simsun.ttc
   copy: src={{ font_download_dir }}/simsun.ttc dest="/usr/share/fonts"
+
+- name: create necessary dirs
+  file: path={{ item }} state=directory owner="{{ server_user }}" mode=0755
+  with_items: "{{ casapp_dirs }}"

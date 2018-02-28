@@ -1,2 +1,4 @@
 ---
 x: '{{ ansible_machine }}'
+var1: '{{ your_var1}}'
+y: '{{ app_name + ":"+ your_var1}}'

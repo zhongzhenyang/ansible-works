@@ -1,6 +1,6 @@
 ---
 app_name: "{{ your_app_name }}"
-app_dir:  "{{ your_app_dir }}"
+app_dir:  '{{ app_parent_dir + "/" + app_name }}'
 context_path: "{{ your_app_context_path }}"
 server_host: "{{ hostvars[your_app_server_host].ansible_ssh_host }}"
 server_port: "{{ your_app_server_port }}"

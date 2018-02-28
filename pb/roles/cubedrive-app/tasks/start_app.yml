@@ -4,7 +4,7 @@
   supervisorctl: name={{ app_name }} state=restarted
   ignore_errors: yes
 
-- name: build nginx job
+- name: build jenkins jobs
   uri:
     force_basic_auth: "yes"
     headers:
@@ -14,8 +14,10 @@
     password: "{{ jenkins_password }}"
     return_content: "yes"
     status_code: "201"
-    url: "{{ jenkins_url }}/job/{{ nginx_build_job }}/build"
-      
+    url: "{{ jenkins_url }}/job/{{ item }}/build"
+  with_items:
+    - "{{ app_name }}"
+    - "{{ nginx_build_job }}"
   delegate_to: "localhost"
   become: no
   

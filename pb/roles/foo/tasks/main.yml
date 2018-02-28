@@ -9,7 +9,7 @@
     - blippy
 
 - name: demo that parameterized roles work
-  shell: echo just FYI, param1={{ param1 }}, params={{ param2 }}
+  shell: echo just FYI, param1={{ param1 }}, params={{ param2 }}, y={{ y }}
   register: out
 
 - debug: var=out.stdout_lines
