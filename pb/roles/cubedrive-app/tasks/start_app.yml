@@ -1,0 +1,21 @@
+---
+
+- name: update supervisord
+  supervisorctl: name={{ app_name }} state=restarted
+  ignore_errors: yes
+
+- name: build nginx job
+  uri:
+    force_basic_auth: "yes"
+    headers:
+      Content-Type: "application/json"
+    method: "POST"
+    user: "{{ jenkins_user }}"
+    password: "{{ jenkins_password }}"
+    return_content: "yes"
+    status_code: "201"
+    url: "{{ jenkins_url }}/job/{{ nginx_build_job }}/build"
+      
+  delegate_to: "localhost"
+  become: no
+  

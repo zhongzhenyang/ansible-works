@@ -1,0 +1,70 @@
+- name: Install Docker
+  include_role:
+    name: "angstwad.docker_ubuntu"
+  vars:
+    daemon_json: 
+      registry-mirrors:
+      - 'http://0d358aff.m.daocloud.io'
+  
+- name: Install Java 8
+  include_role:
+    name: "tersmitten.oracle-java"
+  vars:
+    oracle_java_versions:
+      - version: 8
+        set_as_default: true
+
+
+- name: Install necessary packages
+  apt: name={{item}} state=latest update_cache=yes
+  with_items:
+    - "supervisor"
+    - "zlib1g-dev"
+    - "zlib1g"
+    - "fontconfig"
+    - "libfreetype6"
+    - "libfreetype6-dev"
+    - "libxrender-dev"
+    - "libmysqlclient-dev"
+    - "python-dev"
+    - "libxml2-dev"
+    - "libxslt-dev"
+
+- name: Install python eggs
+  pip: name={{ item }}
+  with_items:
+    - "MySQL-python"
+    - "pymongo"
+    - "python-jenkins"
+    - "lxml"
+
+- name: Check if wkhtmltox.tar.xz exists
+  local_action: stat path={{wkhtmltox_download_dir}}/wkhtmltox
+  ignore_errors: True
+  register: wkhtmltox_exists
+  become: False
+
+- name: download wkhtmltox
+  local_action: unarchive src="https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz" dest="{{ wkhtmltox_download_dir }}" remote_src=yes
+  when: wkhtmltox_exists.stat.exists != True
+  become: False
+
+- name: copy wkhtmltox
+  copy: src={{ item }} dest="/usr/bin" mode="a+x"
+  with_items:
+  - "{{ wkhtmltox_download_dir }}/wkhtmltox/bin/wkhtmltopdf"
+  - "{{ wkhtmltox_download_dir }}/wkhtmltox/bin/wkhtmltoimage"
+
+- name: check if simsun.ttc exists
+  local_action: stat path={{font_download_dir}}/simsun.ttc
+  ignore_errors: True
+  register: simsun_exists
+  become: False
+
+- name: download simsun.ttc
+  local_action: get_url url="https://github.com/sonatype/maven-guide-zh/raw/master/content-zh/src/main/resources/fonts/simsun.ttc" dest="{{ font_download_dir }}/" mode=0444
+  when: simsun_exists.stat.exists != True
+  become: False
+
+- name: copy simsun.ttc
+  copy: src={{ font_download_dir }}/simsun.ttc dest="/usr/share/fonts"

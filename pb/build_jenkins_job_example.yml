@@ -1,0 +1,33 @@
+---
+
+- name: build jenkins job
+  hosts: all
+  gather_facts: no
+  
+  tasks:
+  - name: call the jenkins rest api endpoint for starting the jenkins job
+    vars:
+      jenkins_url: "http://localhost:40000/jenkins"
+      jenkins_user: "admin"
+      jenkins_password: "admin"
+      jenkins_job: "build-nginx"
+
+    uri:
+      force_basic_auth: "yes"
+      headers:
+        Content-Type: "application/json"
+      method: "POST" 
+      user: "{{ jenkins_user }}"
+      password: "{{ jenkins_password }}"
+      return_content: "yes"
+      status_code: "201"
+      url: "{{ jenkins_url }}/job/{{ jenkins_job }}/build"
+      
+    register: build_job_result
+    delegate_to: "localhost"
+    become: no
+
+  - name: show job result
+    local_action: debug var=build_job_result
+    become: no
+  

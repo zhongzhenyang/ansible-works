@@ -1,4 +1,0 @@
----
-
-- name: update supervisord
-  supervisorctl: name={{ app_name }} state=restarted

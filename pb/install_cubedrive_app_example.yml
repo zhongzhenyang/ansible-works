@@ -5,7 +5,7 @@
   remote_user: cubedrive
   become: yes
   become_method: sudo
-  gather_facts: no
+  gather_facts: yes
 
   roles:
   - role: "cubedrive-app"

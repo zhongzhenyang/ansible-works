@@ -1,22 +1,28 @@
 ---
 
+- name: setup system
+  include: setup_system.yml
+  tags: ["system"]
+
 - name: mkdir app dir
-  file: path={{ app_dir }} state=directory owner="cubedrive" mode=0775
+  file: path={{ app_dir }} state=directory owner="{{ server_user }}" mode=0775
+  tags: ["app"]
 
 - name: template your supervisor conf
   template: src=supervisor_app.j2 dest="{{ supervisor_conf_dir }}/{{ app_name }}.conf"
-  notify:
-  - "update supervisord"
+  tags: ["app"]
 
 - name: template your nginx conf
   template: src=nginx_upstream.j2 dest="{{ nginx_conf_upstream_dir }}"
   delegate_to: "{{  hostvars[item].ansible_ssh_host }}"
   with_items: "{{ groups[nginx_server_group] }}"
+  tags: ["app"]
     
 
 - name: create a jenkins job
   local_action: jenkins_job config="{{ lookup('template', 'jenkins_project.xml.j2') }}" name={{ app_name }} user="{{ jenkins_user }}" password="{{ jenkins_password }}" url="{{ jenkins_url }}"
   become: False
+  tags: ["app"]
 
 - name: create mysqldb instance
   docker_container:
@@ -31,14 +37,14 @@
       - "{{ mysqld_port }}:3306"
     env:
       MYSQL_ROOT_PASSWORD: "{{ mysql_root_password }}"
-  tags: ["docker", "mysql"]
+  tags: ["app", "docker", "mysql"]
  
 - name: wait until mysqldb running
   wait_for:
     port: "{{ mysqld_port }}"
     delay: 3
     timeout: 600
-  tags: ["docker", "mysql"]
+  tags: ["app", "docker", "mysql"]
 
 - name: create msyqldb user
   mysql_user:
@@ -49,9 +55,9 @@
     host: '%'
     login_user: "root"
     login_password: "{{ mysql_root_password }}"
-    login_host: "{{ server_host }} "
+    login_host: "{{ server_host }}"
     login_port: "{{ mysqld_port }}"
-  tags: ["mysql"]
+  tags: ["app", "mysql"]
 
 - name: Create mysqldb database
   mysql_db:
@@ -62,7 +68,7 @@
     login_password: "{{ mysql_user_password }}"
     login_host: "{{ server_host }}"
     login_port: "{{ mysqld_port }}"
-  tags: ["mysql"]
+  tags: ["app", "mysql"]
   
 
 - name: create mongodb instance
@@ -80,15 +86,14 @@
       MONGO_INITDB_ROOT_USERNAME: "{{ mongo_root_username }}"
       MONGO_INITDB_ROOT_PASSWORD: "{{ mongo_root_password }}"
     command: "mongod --auth"
-  tags: ["docker", "mongodb"]
+  tags: ["app", "docker", "mongodb"]
 
 - name: wait until mongodb running
   wait_for:
     port: "{{ mongod_port }}"
     delay: 3
     timeout: 600
-  tags: ["docker", "mongodb"]
-
+  tags: ["app", "docker", "mongodb"]
 
 
 - name: create mongodb user
@@ -104,4 +109,8 @@
     login_password: "{{ mongo_root_password }}"
     login_host: "{{ server_host }}"
     login_port: "{{ mongod_port }}"
-  tags: ["mongodb"]
+  tags: ["app", "mongodb"]
+
+- name: start app
+  include: start_app.yml
+  tags: ["app"]
