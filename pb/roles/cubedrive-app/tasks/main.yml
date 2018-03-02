@@ -32,7 +32,7 @@
     detach: True
     restart_policy: always
     volumes:
-      - "{{ docker_data_dir }}/{{ app_name }}/mysql :/data/db"
+      - "{{ docker_data_dir }}/{{ app_name }}/mysql:/data/db"
     ports:
       - "{{ mysqld_port }}:3306"
     env:

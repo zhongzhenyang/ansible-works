@@ -1,5 +1,5 @@
 ---
-
+apt_mirror: "http://kambing.ui.ac.id/ubuntu"
 jenkins_url: "http://localhost:40000/jenkins"
 jenkins_user: "admin"
 jenkins_password: "admin"

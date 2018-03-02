@@ -1,3 +1,9 @@
+- name: Update Apt source.list
+  include_role:
+    name: "cecepm.apt"
+  vars:
+    apt_mirror: "http://mirrors.163.com/ubuntu"
+
 - name: Install Docker
   include_role:
     name: "angstwad.docker_ubuntu"

@@ -1,9 +1,12 @@
 - name: debug bla bla
   hosts: all
   remote_user: cubedrive
+
+  tags: ["foo"]
   tasks: 
 # Example that prints the loopback address and gateway for each host
-  - debug:
+  - name: "show some variables"
+    debug:
       msg: "System {{ inventory_hostname }} has uuid {{ ansible_product_uuid }}"
 
 #   - debug:
@@ -30,4 +33,6 @@
       - "groups: {{ groups }}"
       - "play_hosts: {{ play_hosts }}"
       - "home dir: {{ ansible_env.HOME }}"
+      - "foo: {{ foo | default('foo') | regex_replace('-', '') + '-xyz'}}"
+    tags: ["bar"]
 

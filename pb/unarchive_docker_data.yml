@@ -1,0 +1,34 @@
+---
+- name: unarchive docker data
+  hosts: all
+  remote_user: cubedrive
+  become: yes
+  become_method: sudo
+  gather_facts: no
+
+  vars:
+  - sample_data_file: "/home/zzy/sample_data.tar.gz"
+  - docker_data_dir: "/data/docker-data/"
+  - unarchive_result: 
+      changed: False
+      
+
+  tasks:
+    - name: debug unarchive_result
+      debug:
+        var: unarchive_result
+      tags: ["foo"]
+   
+    - name: unarchive sample data
+      unarchive:
+        src: "{{ sample_data_file }}"
+        dest: "{{ docker_data_dir }}"
+      register: unarchive_result
+      tags: ["foo", "bar"]
+    
+    # - debug:
+    #     var: unarchive_result
+    
+    - debug:
+        var: unarchive_result
+      when:  unarchive_result.changed == True
